@@ -1,2 +1,2 @@
-# flowboard
+# Flowboard
 Mini Trello Project
