@@ -1,0 +1,36 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# First run lint-staged for quick feedback on staged files
+echo "🔍 Running lint-staged on changed files..."
+npx lint-staged
+
+# Then run type checking only if TypeScript files were changed
+echo "🔧 Running type checks..."
+if git diff --cached --name-only | grep -q "\.tsx\?$"; then
+  # Check if we have workspaces setup
+  if [ -f "backend/package.json" ] && npm list --depth=0 --workspace=backend >/dev/null 2>&1; then
+    # We have workspaces - check specific workspace if files changed
+    if git diff --cached --name-only | grep -q "^backend/.*\.tsx\?$"; then
+      echo "  - Backend TypeScript files changed, running type-check..."
+      npm run type-check --workspace=backend
+    fi
+    if git diff --cached --name-only | grep -q "^frontend/.*\.tsx\?$"; then
+      echo "  - Frontend TypeScript files changed, running type-check..."
+      npm run type-check --workspace=frontend --if-present
+    fi
+  else
+    # No workspaces or single package - run global type-check
+    npm run type-check
+  fi
+fi
+
+# Run tests only for changed files (if you have a script for this)
+if git diff --cached --name-only | grep -q "\.(js|ts|jsx|tsx)$"; then
+  echo "🧪 Running tests for changed files..."
+  # Option 1: If you have a script that runs tests for changed files only
+  npm run test:staged --if-present
+  
+  # Option 2: If not, run a quick test suite (not the full test:run)
+  # npm run test:quick --if-present
+fi

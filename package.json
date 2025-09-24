@@ -1,0 +1,51 @@
+{
+  "name": "flowboard-monorepo",
+  "version": "1.0.0",
+  "description": "Flowboard Application (Mini Trello Project) - Frontend and Backend Monorepo",
+  "private": true,
+  "author": "David Olanrewaju",
+  "type": "module",
+  "keywords": [
+    "monorepo",
+    "flowboard",
+    "frontend",
+    "backend"
+  ],
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "prepare": "husky install",
+    "type-check": "npm run type-check --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "lint:fix": "npm run lint:fix --workspaces --if-present",
+    "format": "npm run format --workspaces --if-present",
+    "format:check": "npm run format:check --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "test:run": "npm run test:run --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "backend:dev": "npm run dev --workspace=backend",
+    "frontend:dev": "npm run dev --workspace=frontend",
+    "backend:test": "npm run test --workspace=backend",
+    "frontend:test": "npm run test --workspace=frontend",
+    "dev": "concurrently \"npm run backend:dev\" \"npm run frontend:dev\"",
+    "test:staged": "npm run test:changed --if-present",
+    "test:quick": "npm run test -- --passWithNoTests --bail"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.0"
+  },
+  "lint-staged": {
+    "backend/**/*.{ts,tsx,js,jsx}": [
+      "npm run lint --workspace=backend",
+      "npm run test --workspace=backend -- --passWithNoTests"
+    ],
+    "frontend/**/*.{ts,tsx,js,jsx}": [
+      "npm run lint --workspace=frontend",
+      "npm run test --workspace=frontend -- --passWithNoTests"
+    ]
+  }
+}
