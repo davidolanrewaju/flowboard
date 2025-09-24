@@ -1,7 +1,20 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# FIRST: Check commit message if it exists
+echo "💬 Checking commit message..."
+if [ -f ".git/COMMIT_EDITMSG" ]; then
+  npx --no-install commitlint --edit .git/COMMIT_EDITMSG
+  if [ $? -ne 0 ]; then
+    echo "❌ Fix your commit message first!"
+    exit 1
+  fi
+  echo "✅ Commit message is valid"
+fi
+
 echo "🔍 Running lint-staged on changed files..."
 npx lint-staged
 
-# THIRD: Run type checks  
 echo "🔧 Running type checks..."
 if git diff --cached --name-only | grep -q "\.tsx\?$"; then
   if [ -f "backend/package.json" ] && npm list --depth=0 --workspace=backend >/dev/null 2>&1; then
@@ -18,8 +31,7 @@ if git diff --cached --name-only | grep -q "\.tsx\?$"; then
   fi
 fi
 
-# FOURTH: Run tests
+echo "🧪 Running tests for changed files..."
 if git diff --cached --name-only | grep -q "\.(js|ts|jsx|tsx)$"; then
-  echo "🧪 Running tests for changed files..."
   npm run test:staged --if-present
 fi
