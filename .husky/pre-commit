@@ -1,5 +1,9 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+# FIRST: Quick commit message validation (get it from command line if using -m)
+echo "💬 Pre-validating commit message..."
+# This will work for `git commit -m "message"` commands
+if [ -n "$1" ]; then
+  echo "$1" | npx --no-install commitlint
+fi
 
 # First run lint-staged for quick feedback on staged files
 echo "🔍 Running lint-staged on changed files..."
