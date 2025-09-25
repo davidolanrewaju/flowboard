@@ -1,6 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
 # FIRST: Check commit message if it exists
 echo "💬 Checking commit message..."
 if [ -f ".git/COMMIT_EDITMSG" ]; then
